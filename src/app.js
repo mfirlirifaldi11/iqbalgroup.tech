@@ -1,6 +1,7 @@
 // src/app.js
 const express = require('express');
 const bodyParser = require('body-parser');
+const authRoutes = require('./routes/auth');
 const db = require('./config/db');
 
 const app = express();
@@ -9,10 +10,13 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(bodyParser.json());
 
-// Routes
+// Main routes
 app.get('/', (req, res) => {
-  res.send('Hello, Jilan');
+  res.send('Hello, e-ticket app!');
 });
+
+// Auth routes
+app.use('/auth', authRoutes);
 
 // Start the server
 app.listen(PORT, () => {

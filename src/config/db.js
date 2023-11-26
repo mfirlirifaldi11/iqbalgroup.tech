@@ -1,19 +1,17 @@
 // src/config/db.js
 const mysql = require('mysql2');
 
-const connection = mysql.createConnection({
+// Buat koneksi pool dengan mode promise
+const pool = mysql.createPool({
   host: 'localhost',
-  user: 'root',           // Sesuaikan dengan username MySQL Anda
-  password: '',   // Sesuaikan dengan password MySQL Anda
-  database: 'iqbalgroup.tech', // Sesuaikan dengan nama database Anda
+  user: 'root',
+  password: '',
+  database: 'iqbalgroup.tech',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  Promise: require('bluebird') // Gunakan library promise (contoh: bluebird)
 });
 
-connection.connect((err) => {
-  if (err) {
-    console.error('Error connecting to MySQL:', err);
-  } else {
-    console.log('Connected to MySQL database');
-  }
-});
-
-module.exports = connection;
+// Ekspor objek koneksi pool
+module.exports = pool;
