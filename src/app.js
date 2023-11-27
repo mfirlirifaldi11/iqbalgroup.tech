@@ -1,11 +1,16 @@
 // src/app.js
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/auth');
+const attendanceRoutes = require('./routes/attendance');
 const db = require('./config/db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Enable CORS for all routes
+app.use(cors());
 
 // Middleware
 app.use(bodyParser.json());
@@ -17,6 +22,9 @@ app.get('/', (req, res) => {
 
 // Auth routes
 app.use('/auth', authRoutes);
+
+// Auth routes
+app.use('/attendance', attendanceRoutes);
 
 // Start the server
 app.listen(PORT, () => {
