@@ -4,6 +4,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/auth');
 const attendanceRoutes = require('./routes/attendance');
+const serverRoutes = require('./routes/server_wifi');
+const ticketRoutes = require('./routes/tickets');
 const db = require('./config/db');
 
 const app = express();
@@ -23,8 +25,14 @@ app.get('/', (req, res) => {
 // Auth routes
 app.use('/auth', authRoutes);
 
+// server wifi routes
+app.use('/server', serverRoutes);
+
 // Auth routes
 app.use('/attendance', attendanceRoutes);
+
+// Ticket routes
+app.use('/tickets', ticketRoutes);
 
 // Start the server
 app.listen(PORT, () => {
