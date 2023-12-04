@@ -1,15 +1,13 @@
-// In attendance.js
-
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
+const path = require('path');
+const config = require('../config/config'); // Sesuaikan path sesuai struktur proyek Anda
 
 // Mark attendance endpoint
 router.post('/mark', async (req, res) => {
   try {
-    const { teknisiId, dateAttended, timeAttended } = req.body;
-
-    console.log(req.body)
+    const { teknisiId, dateAttended, timeAttended, photoPath, latitude, longitude } = req.body;
 
     // Check if teknisiId, dateAttended, and timeAttended are defined
     if (teknisiId === undefined || dateAttended === undefined || timeAttended === undefined) {
@@ -22,12 +20,12 @@ router.post('/mark', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Teknisi not found' });
     }
 
-    // Insert the attendance record
+    // Insert the attendance record with photoPath, latitude, and longitude
     const [result] = await db
       .promise()
       .execute(
-        'INSERT INTO attendances (teknisi_id, date_attended, time_attended) VALUES (?, ?, ?)',
-        [teknisiId, dateAttended, timeAttended]
+        'INSERT INTO attendances (teknisi_id, date_attended, time_attended, photo_path, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?)',
+        [teknisiId, dateAttended, timeAttended, photoPath ? path.join(config.storagePath, photoPath) : null, latitude || null, longitude || null]
       );
 
     // Handle the result and send a response
