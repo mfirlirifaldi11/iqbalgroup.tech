@@ -6,6 +6,7 @@ const authRoutes = require('./routes/auth');
 const attendanceRoutes = require('./routes/attendance');
 const serverRoutes = require('./routes/server_wifi');
 const ticketRoutes = require('./routes/tickets');
+const userRolesRoutes = require('./routes/user_roles');
 const db = require('./config/db');
 
 const app = express();
@@ -24,6 +25,7 @@ app.get('/', (req, res) => {
 
 // Auth routes
 app.use('/auth', authRoutes);
+app.use('/roles', userRolesRoutes);
 
 // server wifi routes
 app.use('/server', serverRoutes);
