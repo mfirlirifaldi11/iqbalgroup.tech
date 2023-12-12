@@ -7,10 +7,17 @@ const attendanceRoutes = require('./routes/attendance');
 const serverRoutes = require('./routes/server_wifi');
 const ticketRoutes = require('./routes/tickets');
 const userRolesRoutes = require('./routes/user_roles');
+const userRoutes = require('./routes/user');
 const db = require('./config/db');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Serve static files
+app.use(express.static(path.join(__dirname, '../public')));
+
+app.use('/uploads/profile', express.static('uploads/profile'));
 
 // Enable CORS for all routes
 app.use(cors());
@@ -35,6 +42,10 @@ app.use('/attendance', attendanceRoutes);
 
 // Ticket routes
 app.use('/tickets', ticketRoutes);
+
+// User routes
+app.use('/user', userRoutes);
+
 
 // Start the server
 app.listen(PORT, () => {

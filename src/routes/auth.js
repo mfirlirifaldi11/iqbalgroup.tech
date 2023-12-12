@@ -11,7 +11,6 @@ const storage = multer.diskStorage({
     cb(null, 'uploads/profile/');
   },
   filename: (req, file, cb) => {
-    // Generate a unique filename
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     const fileExtension = path.extname(file.originalname);
     cb(null, file.fieldname + '-' + uniqueSuffix + fileExtension);
@@ -20,8 +19,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Register endpoint
-router.post('/register', async (req, res) => {
+// Register endpoint with combined image upload and registration
+router.post('/register', upload.single('photo'), async (req, res) => {
   try {
     const { username, password, role_name, full_name, email, phone_number } = req.body;
 
@@ -37,6 +36,15 @@ router.post('/register', async (req, res) => {
     // Hash password before saving to the database
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Call the image upload endpoint
+    const photoUrl = req.file ? req.file.filename : null;
+
+    console.log(photoUrl);
+
+    if (!photoUrl) {
+      return res.status(400).json({ success: false, error: 'No photo uploaded' });
+    }
+
     // Insert user into the database using promise-based execute
     const [roleResult] = await db.promise().execute(
       'SELECT `role_id` FROM `user_roles` WHERE `role_name` = ?',
@@ -50,8 +58,8 @@ router.post('/register', async (req, res) => {
     const roleId = roleResult[0].role_id;
 
     const [userResult] = await db.promise().execute(
-      'INSERT INTO users (username, password_hash, role_id, full_name, email, phone_number) VALUES (?, ?, ?, ?, ?, ?)',
-      [username, hashedPassword, roleId, full_name, email, phone_number]
+      'INSERT INTO users (username, password_hash, role_id, full_name, email, phone_number, photo_url) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [username, hashedPassword, roleId, full_name, email, phone_number, photoUrl]
     );
 
     // Retrieve user ID from the result
@@ -68,65 +76,31 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Update user photo URL endpoint
-router.post('/update-photo', upload.single('photo'), async (req, res) => {
-  try {
-    const { userId } = req.body;
-    const photoUrl = req.file ? req.file.filename : null;
-
-    // Update user's photo URL in the database
-    await db.promise().execute('UPDATE users SET photo_url = ? WHERE user_id = ?', [photoUrl, userId]);
-
-    res.json({ success: true, message: 'Photo URL updated successfully' });
-  } catch (error) {
-    console.error('Error updating user photo URL:', error);
-    res.status(500).json({ success: false, error: 'Failed to update photo URL' });
-  }
-});
-
-// Serve static files (user profile photos)
-router.use('/uploads', express.static('uploads'));
-
 // Login endpoint
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // Cari pengguna berdasarkan username
+    // Find user by username
     const [userRows] = await db.promise().execute('SELECT * FROM users WHERE username = ?', [username]);
 
-    // Jika pengguna tidak ditemukan
+    // If user not found
     if (userRows.length === 0) {
       return res.status(401).json({ success: false, error: 'Invalid username or password' });
     }
 
-    // Verifikasi password
+    // Verify password
     const passwordMatch = await bcrypt.compare(password, userRows[0].password_hash);
 
     if (!passwordMatch) {
       return res.status(401).json({ success: false, error: 'Invalid username or password' });
     }
 
-    // Pengguna berhasil masuk
+    // User successfully logged in
     res.json({ success: true, message: 'Login successful', user: userRows[0] });
   } catch (error) {
     console.error('Error during login:', error);
     res.status(500).json({ success: false, error: 'Login failed' });
-  }
-});
-
-// Update user photo URL endpoint
-router.post('/update-photo', async (req, res) => {
-  try {
-    const { userId, photoUrl } = req.body;
-
-    // Update user's photo URL in the database
-    await db.promise().execute('UPDATE users SET photo_url = ? WHERE user_id = ?', [photoUrl, userId]);
-
-    res.json({ success: true, message: 'Photo URL updated successfully' });
-  } catch (error) {
-    console.error('Error updating user photo URL:', error);
-    res.status(500).json({ success: false, error: 'Failed to update photo URL' });
   }
 });
 
