@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time In Form</title>
+    <!-- Tambahkan link Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Time In Form</h1>
+
+        <form id="timeInForm">
+            <label for="user_id">User ID:</label>
+            <input type="text" class="form-control" id="user_id" name="user_id" required />
+
+            <label for="date_attended">Date Attended:</label>
+            <input type="date" class="form-control" id="date_attended" name="date_attended" required />
+
+            <label for="time_in">Time In:</label>
+            <input type="time" class="form-control" id="time_in" name="time_in" required />
+
+            <label for="latitude">Latitude:</label>
+            <input type="text" class="form-control" id="latitude" name="latitude" required />
+
+            <label for="longitude">Longitude:</label>
+            <input type="text" class="form-control" id="longitude" name="longitude" required />
+
+            <label for="photo_url">Photo Path:</label>
+            <input type="file" class="form-control-file" id="photo_url" name="photo_url" accept="image/*" />
+
+            <button type="button" class="btn btn-success" onclick="submitTimeIn()">Submit Time In</button>
+        </form>
+
+        <!-- Tambahkan elemen tabel untuk menampilkan data attendance -->
+        <table class="table">
+                    <!-- Tambahkan elemen filter untuk user_id -->
+        <div class="form-group">
+            <label for="filterUserId">Filter User ID:</label>
+            <input type="text" class="form-control" id="filterUserId" name="filterUserId" />
+        </div>
+        <button type="button" class="btn btn-primary" onclick="filterAttendance()">Filter</button>
+            <thead>
+                <tr>
+                    <th>Attendance ID</th>
+                    <th>User ID</th>
+                    <th>Date Attended</th>
+                    <th>Time In</th>
+                    <th>Time Out</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>Photo Path</th>
+                </tr>
+            </thead>
+            <tbody id="attendanceTableBody"></tbody>
+        </table>
+    </div>
+
+    <!-- Tambahkan script Bootstrap JS dan script Anda -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

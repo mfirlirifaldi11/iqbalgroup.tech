@@ -17,10 +17,10 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage }).single('photo_url');
 
 // Register endpoint with combined image upload and registration
-router.post('/register', upload.single('photo'), async (req, res) => {
+router.post('/register', upload, async (req, res) => {
   try {
     const { username, password, role_name, full_name, email, phone_number } = req.body;
 
