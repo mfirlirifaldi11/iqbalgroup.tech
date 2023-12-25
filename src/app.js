@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 3000;
 // Serve static files
 app.use(express.static(path.join(__dirname, '../public')));
 
-app.use('/uploads/profile', express.static('uploads/profile'));
+app.use('/uploads', express.static('uploads'));
 
 // Enable CORS for all routes
 app.use(cors());

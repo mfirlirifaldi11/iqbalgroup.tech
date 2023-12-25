@@ -4,8 +4,8 @@ const mysql = require('mysql2');
 // Buat koneksi pool dengan mode promise
 const pool = mysql.createPool({
   host: 'localhost',
-  user: 'piew',
-  password: 'piew123',
+  user: 'root',
+  password: '',
   database: 'iqbalgroup.tech',
   waitForConnections: true,
   connectionLimit: 10,
